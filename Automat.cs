@@ -1,16 +1,22 @@
 ﻿using System;
 
 namespace Practica
-{
+{   
+    //Класс самого автомата
     public class Automat
-    {
-
+    {   
         private static Random rnd = new Random();
+        // Ширина и высота поля в пикселях
         public int width, height;
-        private byte[,] area;
+        // Само поле
+        private int[,] area;
+        // Темп смертности
         private double deathProbability;
+        // Темп рождаемости
         private double birthProbability;
+        // Сила конкуренции
         private double competePower;
+        // Счетчик индивидов
         private int cnt = 0;
 
         public Automat(double dp, double bp, double cp, int width, int height)
@@ -24,6 +30,7 @@ namespace Practica
             init();
         }
 
+        // Случайное заполнение поля
         private void init()
         {
             for (int i = 0; i < height; i++)
@@ -34,12 +41,15 @@ namespace Practica
                 }
         }
 
+        // Ядро конкуренции
         private double w(int x)
         {
             double exp = -0.5 * (3 * x * x + 4 * x * x * x * x) / (1 + x * x);
             return Math.Pow(Math.E, exp);
         }
 
+        // Генератор случайных чисел из
+        // нормального распределения по ЦПТ
         private int NormalRnd()
         {
             int times = 10;
@@ -54,6 +64,7 @@ namespace Practica
             return (int)Math.Round((sum - avr * times) / (sigma * Math.Sqrt(times)));
         }
 
+        // Следующее состояние автомата
         public byte[,] next()
         {
             for (int i = 0; i < height; i++)
@@ -62,6 +73,7 @@ namespace Practica
                     int tmp = area[i, j];
                     for (int t = 0; t < tmp; t++)
                     {
+                        // Каждое растение пытается дать потомство
                         if (rnd.NextDouble() <= birthProbability)
                         {
                             int del_x = NormalRnd();
@@ -77,6 +89,7 @@ namespace Practica
                             }
                         }
 
+                        // Каждое растение может умереть
                         double pr = 0;
                         bool fl = true;
                         for (int a = i - 1; a <= i + 1 && fl; a++)
@@ -101,6 +114,7 @@ namespace Practica
             return area;
         }
 
+        // Количество живых индивидов в данный момент
         public int getCol()
         {
             return cnt;
