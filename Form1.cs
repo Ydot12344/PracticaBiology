@@ -9,27 +9,40 @@ namespace WindowsAutomat
 {
     public partial class Form1 : Form
     {
+        // Статистика за каждый момент времени
         private List<long> stats;
+  
         private Graphics graphics;
+        
+        // Разрешение по x и y
         private int resolution_x, resolution_y;
+        
+        // Клеточный автомат
         private Automat automat;
+        
+        // Номер момента времени
         private int iter_num;
+        
         public Form1()
         {
             InitializeComponent();
             ColLabel.Text = "Num: 0";
         }
 
+        // Тик таймера
         private void timer1_Tick(object sender, EventArgs e)
         {
             stats.Add(automat.getCol());
+            
+            // Смена названия окна и кол-ва индивидов
             ColLabel.Text = "Num: " + automat.getCol();
             this.Text = iter_num.ToString();
             iter_num++;
             graphics.Clear(Color.Black);
 
             byte[,] area = automat.next();
-
+               
+            // Отрисовка поля
             for(int x = 0; x < automat.height; x++)
                 for(int y = 0; y < automat.width; y++)
                 {
@@ -42,6 +55,7 @@ namespace WindowsAutomat
             pictureBox1.Refresh();
         }
 
+        // Запуск симуляции
         private void bStart_Click(object sender, EventArgs e)
         {
             stats = new List<long>();
@@ -53,6 +67,7 @@ namespace WindowsAutomat
             timer1.Start();
         }
 
+        // Сохранение статистики
         private void buttonSave_Click(object sender, EventArgs e)
         {
             String folder = String.Empty;
@@ -89,6 +104,7 @@ namespace WindowsAutomat
             }
         }
 
+        // Остановка симуляции
         private void bStop_Click(object sender, EventArgs e)
         {
             timer1.Stop();
